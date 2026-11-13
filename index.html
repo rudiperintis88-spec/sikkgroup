@@ -717,10 +717,12 @@ function render() {
         '" title="Klik untuk mengurutkan"><span class="ht">' + esc(t) + '</span><span class="arr">' +
         (on ? (so.dir === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;') + '</span></th>';
     }).join('') + '</tr></thead><tbody>';
+    const base = S.page * PAGE, numNo = v.head[0] === 'No';
+    let rn = 0;
     for (const r of rows) {
-      h += '<tr>';
+      h += '<tr>'; rn++;
       for (let i = 0; i < v.head.length; i++) {
-        const c = r[i] == null ? '' : r[i];
+        const c = (i === 0 && numNo) ? base + rn : (r[i] == null ? '' : r[i]);
         if (isOut && i === 16) h += '<td><span class="tag ' + (c === 'SIKK' ? 'sikk' : c === 'WO' ? 'wo' : 'none') + '">' +
           (c === 'SIKK' ? 'SIKK No' : c === 'WO' ? 'No WO' : 'Tidak ketemu') + '</span></td>';
         else if (isOut && i === 5 && !c) h += '<td class="miss">-</td>';
@@ -783,10 +785,11 @@ function drawPop() {
       '</span><span class="arr">' + (on ? (P.sort.dir === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;') + '</span></th>';
   }).join('') + '</tr></thead><tbody>';
   if (!view.length) h += '<tr><td colspan="' + d.head.length + '" class="empty">Tidak ada data.</td></tr>';
+  let pn = 0;
   for (const r of view) {
-    h += '<tr>';
+    h += '<tr>'; pn++;
     for (let i = 0; i < d.head.length; i++) {
-      const c = r[i] == null ? '' : r[i];
+      const c = (i === 0 && d.head[0] === 'No') ? P.page * PAGE + pn : (r[i] == null ? '' : r[i]);
       if (i === 16) h += '<td><span class="tag ' + (c === 'SIKK' ? 'sikk' : c === 'WO' ? 'wo' : 'none') + '">' + (SRC_TXT[c] || c) + '</span></td>';
       else if (i === 5 && !c) h += '<td class="miss">-</td>';
       else h += '<td>' + esc(c) + '</td>';
@@ -822,8 +825,9 @@ function exportItem(tab, active) {        // active = ikut filter, pencarian dan
   try {
     const v = active ? filtered() : curView();
     const head = v.head.slice();
-    const rows = v.rows.map(r => head.map((_, i) => {
-      const c = r[i] == null ? '' : r[i];
+    const numNo = head[0] === 'No';
+    const rows = v.rows.map((r, ri) => head.map((_, i) => {
+      const c = (i === 0 && numNo) ? ri + 1 : (r[i] == null ? '' : r[i]);
       return (OUTLIKE.includes(tab) && i === 16) ? (SRC_TXT[c] || c) : c;
     }));
     if (OUTLIKE.includes(tab)) head[16] = 'Sumber Data';
