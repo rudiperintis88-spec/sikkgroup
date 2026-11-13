@@ -24,8 +24,12 @@
   nav button:hover{background:#f2f4f7}
   nav button.on{background:var(--navy);color:#fff;font-weight:600}
   main{max-width:1500px;margin:0 auto;padding:26px 28px 50px}
+  [hidden]{display:none!important}
   .head{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
   h1{margin:0;font:700 28px/1.15 var(--sans);letter-spacing:-.3px}
+  .k .yr{margin-top:8px}
+  .k .yd{margin:2px 0 0 0;color:#475467;font-size:12.5px}
+  .srcLine{margin-top:8px;color:#475467;font-size:13px}
   .per{margin-top:8px;color:#475467;font-size:13.5px}
   .side{text-align:right;max-width:100%}
   .liveRow{display:flex;gap:14px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
@@ -182,6 +186,7 @@
         <span class="live"><i class="dot load" id="dot"></i><span id="liveTxt">Memuat data dari Google Sheet...</span></span>
         <button class="refresh" id="btnRefresh"><span class="ric">&#8635;</span>Refresh</button>
       </div>
+      <div class="srcLine" id="srcLine"></div>
     </div>
   </div>
   <hr class="sep">
@@ -340,7 +345,7 @@ function colIdx(header, ...names) {
   return -1;
 }
 function colStarts(header, prefix) { return header.map(norm).findIndex(x => x.startsWith(norm(prefix))); }
-function need(i, nm, sh) { if (i < 0) throw new Error('Kolom "' + nm + '" tidak ditemukan di sheet ' + sh); return i; }
+function need(i, nm, sh) { if (i < 0) throw new Error('Kolom "' + nm + '" tidak ditemukan di ' + (sh === SHEET_SA ? 'sheet ' + sh : 'Data Sebelumnya')); return i; }
 const dateOf = s => val(s).split(' ')[0];
 const dmy = s => { const m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(String(s || '')); return m ? { d: +m[1], m: +m[2], y: +m[3] } : null; };
 
@@ -402,7 +407,7 @@ function build(d, br, sb, am, sa) {
     val(sbH[T.ket]), val(sbH[T.fisik]), val(sbH[T.keluar]), pHead, 'Sumber'];
 
   const out = [];
-  const stat = { total: 0, sikk: 0, wo: 0, none: 0, advMiss: 0, pFill: 0, years: {}, latest: null };
+  const stat = { total: 0, sikk: 0, wo: 0, none: 0, advMiss: 0, pFill: 0, years: {}, yd: {}, latest: null };
   for (let i = 1; i < am.length; i++) {
     const r = am[i];
     if (r.every(x => val(x) === '')) continue;
@@ -432,7 +437,7 @@ function build(d, br, sb, am, sa) {
     if (!advName) stat.advMiss++;
     if (row[15]) stat.pFill++;
     const dt = dmy(r[A.tglWO]);
-    if (dt) stat.years[dt.y] = (stat.years[dt.y] || 0) + 1;
+    if (dt) { stat.years[dt.y] = (stat.years[dt.y] || 0) + 1; const q = stat.yd[dt.y] || (stat.yd[dt.y] = { sikk: 0, wo: 0, none: 0 }); if (src === 'SIKK') q.sikk++; else if (src === 'WO') q.wo++; else q.none++; }
     const ds = dmy(r[A.sikkTgl]) || dt;
     if (ds) {
       const t = Date.UTC(ds.y, ds.m - 1, ds.d);
@@ -477,13 +482,13 @@ function inPeriod(tgl) {
   return true;
 }
 function statOf(rows) {
-  const s = { total: 0, sikk: 0, wo: 0, none: 0, advMiss: 0, pFill: 0, years: {}, latest: null };
+  const s = { total: 0, sikk: 0, wo: 0, none: 0, advMiss: 0, pFill: 0, years: {}, yd: {}, latest: null };
   for (const r of rows) {
     s.total++;
     if (r[16] === 'SIKK') s.sikk++; else if (r[16] === 'WO') s.wo++; else s.none++;
     if (!r[5]) s.advMiss++;
     if (r[15]) s.pFill++;
-    const dt = dmy(r[1]); if (dt) s.years[dt.y] = (s.years[dt.y] || 0) + 1;
+    const dt = dmy(r[1]); if (dt) { s.years[dt.y] = (s.years[dt.y] || 0) + 1; const q = s.yd[dt.y] || (s.yd[dt.y] = { sikk: 0, wo: 0, none: 0 }); if (r[16] === 'SIKK') q.sikk++; else if (r[16] === 'WO') q.wo++; else q.none++; }
     const ds = dmy(r[7]) || dt;
     if (ds) { const t = Date.UTC(ds.y, ds.m - 1, ds.d); if (!s.latest || t > s.latest.t) s.latest = { t, d: ds.d, m: ds.m, y: ds.y }; }
   }
@@ -643,8 +648,9 @@ function render() {
   if (hasData) {
     const s = d.stat;
     const lt = s.latest ? 'Data SIKK terakhir : ' + pad(s.latest.d) + '-' + MONTHS[s.latest.m - 1] + '-' + s.latest.y : '';
-    $('per').textContent = 'Sumber : SIKK ' + br.name + (lt ? '  ·  ' + lt : '') + (periodLabel() ? '  ·  Periode : ' + periodLabel() : '');
-  } else { $('per').textContent = 'Sumber : SIKK ' + br.name; }
+    $('per').textContent = lt + (periodLabel() ? (lt ? '  ·  ' : '') + 'Periode : ' + periodLabel() : '');
+  } else { $('per').textContent = ''; }
+  $('srcLine').textContent = 'Sumber : SIKK ' + br.name;
 
   // banner
   const al = $('alert');
@@ -658,21 +664,23 @@ function render() {
   if (hasData) {
     const s = d.stat;
     const pct = n => s.total ? (Math.round(n * 1000 / s.total) / 10).toLocaleString('id-ID') + '% dari total' : '';
-    const yrs = Object.keys(s.years).sort().map(y => '<b>' + y + '</b> <span>' + fnum(s.years[y]) + '</span>').join(' <span>·</span> ');
+    const yrs = Object.keys(s.years).sort().map(y => { const q = (s.yd && s.yd[y]) || { sikk: 0, wo: 0, none: 0 };
+      return '<div class="yr"><b>' + y + '</b> <span>' + fnum(s.years[y]) + '</span>' +
+        '<div class="yd">SIKK No <b>' + fnum(q.sikk) + '</b> &middot; No WO <b>' + fnum(q.wo) + '</b>' + (q.none ? ' &middot; Tidak ketemu <b>' + fnum(q.none) + '</b>' : '') + '</div></div>'; }).join('');
     kp.hidden = false;
     kp.innerHTML =
       '<div class="k big"><div class="lab">Total seluruh baris Data Terbaru</div>' +
         '<div class="num">' + fnum(s.total) + '</div>' +
-        '<div class="sub"><b>' + fnum(s.sikk + s.wo) + '</b> ketemu di ' + esc(br.sb) + ', <b>' + fnum(s.none) + '</b> tidak ketemu<br>' + yrs + '</div></div>' +
+        '<div class="sub"><b>' + fnum(s.sikk + s.wo) + '</b> ketemu di Data Sebelumnya, <b>' + fnum(s.none) + '</b> tidak ketemu' + yrs + '</div></div>' +
       '<div class="k clk" data-pop="sikk" role="button" tabindex="0" title="Klik untuk melihat detail"><div class="lab"><i style="background:var(--green)"></i>Cocok via SIKK No<span class="chev">&rsaquo;</span></div>' +
         '<div class="num">' + fnum(s.sikk) + ' <small>baris</small></div><div class="sub">' + pct(s.sikk) + '</div></div>' +
       '<div class="k clk" data-pop="wo" role="button" tabindex="0" title="Klik untuk melihat detail"><div class="lab"><i style="background:var(--blue)"></i>Cocok via No WO<span class="chev">&rsaquo;</span></div>' +
         '<div class="num">' + fnum(s.wo) + ' <small>baris</small></div><div class="sub">SIKK No kosong atau tidak cocok</div></div>' +
-      '<div class="k clk' + (s.none ? ' red' : '') + '" data-pop="none" role="button" tabindex="0" title="Klik untuk melihat detail"><div class="lab"><i style="background:var(--red)"></i>Tidak ketemu di ' + esc(br.sb) + '<span class="chev">&rsaquo;</span></div>' +
-        '<div class="num">' + fnum(s.none) + ' <small>baris</small></div><div class="sub">tidak ada catatan SIKK/WO di ' + esc(br.sb) + '</div></div>' +
+      '<div class="k clk' + (s.none ? ' red' : '') + '" data-pop="none" role="button" tabindex="0" title="Klik untuk melihat detail"><div class="lab"><i style="background:var(--red)"></i>Tidak ketemu di Data Sebelumnya<span class="chev">&rsaquo;</span></div>' +
+        '<div class="num">' + fnum(s.none) + ' <small>baris</small></div><div class="sub">tidak ada catatan SIKK/WO di Data Sebelumnya</div></div>' +
       '<div class="k clk' + (s.advMiss ? ' org' : '') + '" data-pop="adv" role="button" tabindex="0" title="Klik untuk melihat detail"><div class="lab"><i style="background:#c2410c"></i>Nama Advisor kosong<span class="chev">&rsaquo;</span></div>' +
         '<div class="num">' + fnum(s.advMiss) + ' <small>baris</small></div><div class="sub">kode advisor belum ada di ' + SHEET_SA + '</div></div>';
-  } else kp.hidden = true;
+  } else { kp.hidden = true; kp.innerHTML = ''; }
 
   // tab sheet
   const pl = $('pills');
@@ -727,12 +735,12 @@ function render() {
     $('pinfo').textContent = 'Halaman ' + (S.page + 1) + ' / ' + pages + '  (' + fnum(v.rows.length) + ' baris)';
     $('prev').disabled = S.page === 0; $('next').disabled = S.page >= pages - 1;
     $('note').textContent =
-      S.tab === 'prev' ? 'Data Sebelumnya: isi sheet "' + br.sb + '" apa adanya.'
+      S.tab === 'prev' ? 'Data Sebelumnya: isi sheet Data Sebelumnya apa adanya.'
       : S.tab === 'db' ? 'Database: isi sheet "' + br.am + '" ditambah kolom Nama Advisor yang dibaca dari sheet "' + SHEET_SA + '" berdasarkan kode Advisor.'
-      : S.tab === 'out' ? 'Data Terbaru: isi sheet "' + br.am + '" + Nama Advisor, ditambah kolom Keterangan, Fisik SIKK, Tgl Keluar Mobil dan kolom P yang dibaca dari "' + br.sb + '" hanya untuk melengkapi. Jika SIKK No terisi dicocokkan lewat SIKK No; jika kosong (atau tidak cocok) lewat No WO. Bila nomor yang sama berulang, pencocokan memakai tanggalnya juga.'
+      : S.tab === 'out' ? 'Data Terbaru: isi sheet "' + br.am + '" + Nama Advisor, ditambah kolom Keterangan, Fisik SIKK, Tgl Keluar Mobil dan kolom P yang dibaca dari Data Sebelumnya hanya untuk melengkapi. Jika SIKK No terisi dicocokkan lewat SIKK No; jika kosong (atau tidak cocok) lewat No WO. Bila nomor yang sama berulang, pencocokan memakai tanggalnya juga.'
       : S.tab === 'nosikk' ? 'Belum Ada No SIKK: baris Data Terbaru yang kolom SIKK No-nya masih kosong (dibaca dari sheet "' + br.am + '"). Kolom M sampai P terisi bila ketemu lewat No WO.'
       : S.tab === 'both' ? 'Tanpa No SIKK & Keterangan: baris Data Terbaru yang kolom SIKK No dan kolom Keterangan-nya sama-sama masih kosong.'
-      : S.tab === 'noket' ? 'Belum Ada Keterangan: baris Data Terbaru yang kolom Keterangan-nya masih kosong, yaitu tidak ketemu di "' + br.sb + '" atau Keterangan di sana memang kosong.'
+      : S.tab === 'noket' ? 'Belum Ada Keterangan: baris Data Terbaru yang kolom Keterangan-nya masih kosong, yaitu tidak ketemu di Data Sebelumnya atau Keterangan di sana memang kosong.'
       : 'Menampilkan isi sheet "' + SHEET_SA + '" apa adanya.';
   } else {
     $('tblWrap').hidden = true; $('pager').hidden = true; $('note').textContent = '';
