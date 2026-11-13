@@ -16,65 +16,66 @@
     --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans)}
-  .top{display:flex;align-items:center;gap:18px;padding:0 28px;height:62px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
-  .brand{font-weight:700;font-size:19px;letter-spacing:-.2px}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--sans)}
+  .top{display:flex;align-items:center;gap:16px;padding:0 28px;height:54px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+  .brand{font-weight:700;font-size:17px;letter-spacing:-.2px}
   nav{display:flex;gap:8px}
-  nav button{border:0;background:transparent;font:inherit;font-weight:500;color:#344054;padding:9px 22px;border-radius:99px;cursor:pointer}
+  nav button{border:0;background:transparent;font:inherit;font-weight:500;color:#344054;padding:7px 16px;font-size:13.5px;border-radius:99px;cursor:pointer}
   nav button:hover{background:#f2f4f7}
   nav button.on{background:var(--navy);color:#fff;font-weight:600}
-  main{max-width:1500px;margin:0 auto;padding:34px 28px 60px}
+  main{max-width:1500px;margin:0 auto;padding:26px 28px 50px}
   .head{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
-  h1{margin:0;font:700 34px/1.15 var(--sans);letter-spacing:-.3px}
-  .per{margin-top:10px;color:#475467;font-size:16px}
+  h1{margin:0;font:700 28px/1.15 var(--sans);letter-spacing:-.3px}
+  .per{margin-top:8px;color:#475467;font-size:13.5px}
   .side{text-align:right;max-width:100%}
   .liveRow{display:flex;gap:14px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
-  .live{display:inline-flex;gap:8px;align-items:center;font-size:15px;color:#475467}
+  .live{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:#475467}
   .live b{color:var(--ink);font-weight:600}
-  .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #dcf5e4;display:inline-block;flex:none}
-  .dot.bad{background:var(--red);box-shadow:0 0 0 4px #fbdedb}
-  .dot.load{background:#f59e0b;box-shadow:0 0 0 4px #fdeccb}
-  .refresh{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px 22px;font:inherit;font-weight:600;cursor:pointer;color:var(--ink)}
-  .refresh .ric{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--blue);color:#fff;font-size:19px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #dcf5e4;display:inline-block;flex:none}
+  .dot.bad{background:var(--red);box-shadow:0 0 0 3px #fbdedb}
+  .dot.load{background:#f59e0b;box-shadow:0 0 0 3px #fdeccb}
+  .refresh{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;padding:7px 14px 7px 8px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink)}
+  .refresh .ric{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;font-size:15px}
   .refresh:disabled{opacity:.6;cursor:default}
   .src{margin-top:12px;color:#667085;font-size:15px}
-  hr.sep{border:0;border-top:1px solid var(--line);margin:22px 0}
-  .alert{margin:0 0 20px;padding:20px 28px;border-radius:14px;font-size:17px;background:#fdf1d6;color:#8a5a00}
+  hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0 18px}
+  .alert{margin:0 0 18px;padding:13px 20px;border-radius:12px;font-size:13.5px;background:#fdf1d6;color:#8a5a00}
   .alert.ok{background:#e6f6ec;color:#12683a}
   .alert.err{background:#fdecea;color:#a3231a}
   .alert a{color:inherit;font-weight:600}
-  .kpis{display:grid;grid-template-columns:1.25fr 1fr 1fr;grid-template-rows:auto auto;gap:18px;margin-bottom:30px}
-  .k{border:1px solid var(--line);border-radius:22px;padding:24px 28px;background:#fff;min-width:0}
-  .k .lab{display:flex;gap:12px;align-items:center;font-size:19px;color:#344054}
-  .k .lab i{width:15px;height:15px;border-radius:50%;flex:none}
-  .k .num{font:600 32px/1.1 var(--mono);margin:14px 0 8px;letter-spacing:-.5px}
-  .k .num small{font-size:24px}
-  .k .sub{color:#667085;font-size:17px}
+  .kpis{display:grid;grid-template-columns:1.25fr 1fr 1fr;grid-template-rows:auto auto;gap:14px;margin-bottom:24px}
+  .k{border:1px solid var(--line);border-radius:16px;padding:16px 20px;background:#fff;min-width:0}
+  .k .lab{display:flex;gap:10px;align-items:center;font-size:14px;color:#344054}
+  .k .lab i{width:11px;height:11px;border-radius:50%;flex:none}
+  .k .num{font:600 24px/1.1 var(--mono);margin:10px 0 6px;letter-spacing:-.5px}
+  .k .num small{font-size:15px}
+  .k .sub{color:#667085;font-size:12.5px}
   .k.big{grid-row:span 2;display:flex;flex-direction:column}
-  .k.big .lab{font:600 15px var(--sans);letter-spacing:.1px}
-  .k.big .num{font:600 48px/1.1 var(--mono);letter-spacing:-1px;margin:16px 0 10px}
-  .k.big .sub{font:400 14px/1.6 var(--sans);color:#1c2430}
+  .k.big .lab{font:600 14px var(--sans);letter-spacing:.1px}
+  .k.big .num{font:600 38px/1.1 var(--mono);letter-spacing:-1px;margin:12px 0 8px}
+  .k.big .sub{font:400 13px/1.6 var(--sans);color:#1c2430}
   .k.big .sub span{color:#667085}
   .k.red{background:#fdecea;border-color:#f5c6c1}
   .k.red .num{color:var(--red)}
   .k.org .num{color:var(--orange)}
-  .pills{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 18px;border-top:2px solid #dfe3ea;padding-top:24px}
-  .pills button{border:1px solid #cfd5df;background:#fff;color:#475467;font:inherit;font-weight:500;border-radius:99px;padding:13px 26px;cursor:pointer;font-size:16px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px;border-top:2px solid #dfe3ea;padding-top:16px}
+  .pills button{border:1px solid #cfd5df;background:#fff;color:#475467;font:inherit;font-weight:500;border-radius:99px;padding:7px 16px;cursor:pointer;font-size:13px}
   .pills button:hover{background:#f7f8fb}
   .pills button.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
-  .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
-  .tools input,.tools select,.tools button{font:inherit;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
-  .tools input{min-width:280px}
+  .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .tools input,.tools select,.tools button{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .tools input{min-width:230px}
+  .tools .pi{color:var(--muted);font-size:12.5px}
   .tools button{cursor:pointer;font-weight:600}
   .tools button:disabled{opacity:.5;cursor:default}
   .tbl{border:1px solid var(--line);border-radius:16px;overflow:auto;max-height:70vh}
   table{border-collapse:collapse;table-layout:fixed;min-width:100%;white-space:nowrap}
   th,td{overflow:hidden;text-overflow:ellipsis}
-  th,td{padding:9px 14px;border-bottom:1px solid #eef0f4;text-align:left;font-size:13.5px}
-  th{position:sticky;top:0;background:#f4f6fa;z-index:1;font-weight:600;color:#344054}
+  th,td{padding:6px 12px;border-bottom:1px solid #eef0f4;text-align:left;font-size:12.5px}
+  th{position:sticky;top:0;background:#f4f6fa;z-index:1;font-weight:600;font-size:12px;color:#344054}
   th.p{background:#fff1cf}
   tbody tr:hover td{background:#f9fafc}
-  td.mono{font-family:var(--mono);font-size:13px}
+  td.mono{font-family:var(--mono);font-size:12px}
   .miss{color:var(--red)}
   .tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;border:1px solid;font-weight:500}
   .tag.sikk{color:#12683a;border-color:#a9d8b8;background:#eaf7ee}
@@ -82,9 +83,9 @@
   .tag.none{color:var(--red);border-color:#f0b7b2;background:#fdeeed}
   .empty{padding:40px;text-align:center;color:var(--muted)}
   .pager{display:flex;gap:10px;align-items:center;margin-top:12px}
-  .pager button{font:inherit;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer}
+  .pager button{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer}
   .pager button:disabled{opacity:.45;cursor:default}
-  .note{color:var(--muted);font-size:13px;margin-top:16px;max-width:980px}
+  .note{color:var(--muted);font-size:12px;margin-top:16px;max-width:980px}
   th.sortable{cursor:pointer;user-select:none}
   th .ht{margin-right:7px}
   .arr{display:inline-block;font-size:12px;color:#c3c8d3;vertical-align:middle}
@@ -107,11 +108,6 @@
   .mbtn button{font:inherit;padding:11px 22px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
   .mbtn button.go{background:var(--navy);border-color:var(--navy);color:#fff}
   .mbtn button:disabled{opacity:.6;cursor:default}
-  .period{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 20px}
-  .period .pl{font-weight:600;color:#344054;margin-right:2px}
-  .period select{font:inherit;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);min-width:150px}
-  .period button{font:inherit;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-weight:600}
-  .period .pi{color:var(--muted);font-size:14px}
   /* ---- halaman login ---- */
   body.locked .top,body.locked main{display:none}
   .gate{position:fixed;inset:0;z-index:100;background:#fff;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
@@ -127,13 +123,11 @@
   .gbtn{width:100%;font:inherit;font-size:16px;font-weight:700;padding:15px;border:0;border-radius:14px;background:#2745d8;color:#fff;cursor:pointer}
   .gbtn:hover{background:#1f39b8}
   .gbtn:disabled{opacity:.65;cursor:default}
-  .who{margin-left:auto;display:flex;align-items:center;gap:10px;color:#475467;font-size:14px}
-  .who button{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border:1px solid var(--line);border-radius:99px;background:#fff;cursor:pointer}
   @media (max-width:600px){.gbox{padding:28px 20px 26px}.gbox h2{font-size:24px}.gbox input{padding:14px 36px;font-size:15px}}
   .k.clk{cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;position:relative}
   .k.clk:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,24,40,.10);border-color:#b8c2d4}
   .k.clk:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-  .k .chev{margin-left:auto;font-size:26px;line-height:1;color:#98a2b3}
+  .k .chev{margin-left:auto;font-size:20px;line-height:1;color:#98a2b3}
   .k.clk:hover .chev{color:var(--navy)}
   .pbox{width:min(1300px,100%);max-height:92vh;display:flex;flex-direction:column}
   .pbox{overflow:hidden}
@@ -144,11 +138,11 @@
   .pbox .pager .go{margin-left:auto;background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
   @media (max-width:1000px){
     .kpis{grid-template-columns:1fr 1fr}.k.big{grid-column:1/-1;grid-row:auto}
-    h1{font-size:28px}.k.big .num{font-size:40px}.side{text-align:left}.liveRow{justify-content:flex-start}
+    h1{font-size:24px}.k.big .num{font-size:32px}.side{text-align:left}.liveRow{justify-content:flex-start}
   }
   @media (max-width:600px){
     main{padding:22px 16px 50px}.top{padding:0 14px}.kpis{grid-template-columns:1fr}
-    .k .num{font-size:26px}.tools input{min-width:0;width:100%}
+    .k .num{font-size:21px}.tools input{min-width:0;width:100%}
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -175,7 +169,6 @@
 <header class="top">
   <div class="brand">SIKK Group</div>
   <nav id="nav"></nav>
-  <div class="who"><span id="whoName"></span><button id="btnOut" type="button">Keluar</button></div>
 </header>
 
 <main>
@@ -189,18 +182,9 @@
         <span class="live"><i class="dot load" id="dot"></i><span id="liveTxt">Memuat data dari Google Sheet...</span></span>
         <button class="refresh" id="btnRefresh"><span class="ric">&#8635;</span>Refresh</button>
       </div>
-      <div class="src" id="src"></div>
     </div>
   </div>
   <hr class="sep">
-
-  <div class="period" id="period" hidden>
-    <span class="pl">Periode</span>
-    <select id="selYear"><option value="">Semua tahun</option></select>
-    <select id="selMonth"><option value="">Semua bulan</option></select>
-    <button id="periodReset" hidden>Reset</button>
-    <span class="pi" id="periodInfo"></span>
-  </div>
 
   <div class="alert" id="alert" hidden></div>
   <section class="kpis" id="kpis" hidden></section>
@@ -223,8 +207,12 @@
       <option value="">Kolom P: semua</option>
       <option value="FILLED">Kolom P terisi</option>
     </select>
+    <select id="selYear"><option value="">Semua tahun</option></select>
+    <select id="selMonth"><option value="">Semua bulan</option></select>
+    <button id="periodReset" hidden>Reset</button>
     <button id="btnPdf" disabled>Export PDF</button>
     <button id="btnXls" disabled>Export Excel</button>
+    <span class="pi" id="periodInfo"></span>
   </div>
 
   <div class="tbl" id="tblWrap"><table id="tbl"></table></div>
@@ -562,7 +550,7 @@ let MCTX;
 function meas(s, bold) {
   if (MCTX === undefined) { try { MCTX = document.createElement('canvas').getContext('2d') || null; } catch (e) { MCTX = null; } }
   if (!MCTX) return String(s).length * 7.6 * (bold ? 1.06 : 1);
-  MCTX.font = (bold ? '600 ' : '') + '13.5px "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+  MCTX.font = (bold ? '600 12px ' : '12.5px ') + '"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
   return MCTX.measureText(String(s)).width;
 }
 function widthsFor(tab) {
@@ -619,7 +607,6 @@ function render() {
   const hasData = !!d.out;
 
   // pilihan tahun dan bulan
-  $('period').hidden = !hasData;
   if (hasData) {
     const yrs = Object.keys(raw.stat.years).sort().reverse();
     const ysig = S.cur + ':' + yrs.join(',');
@@ -635,6 +622,7 @@ function render() {
 
   $('nav').innerHTML = BR.map(b => '<button data-k="' + b.key + '" class="' + (b.key === S.cur ? 'on' : '') + '">' + esc(b.name) + '</button>').join('');
   $('title').textContent = 'SIKK ' + br.name;
+  document.title = 'SIKK ' + br.name;
   $('btnRefresh').disabled = S.loading;
 
   // status live
@@ -655,9 +643,8 @@ function render() {
   if (hasData) {
     const s = d.stat;
     const lt = s.latest ? 'Data SIKK terakhir : ' + pad(s.latest.d) + '-' + MONTHS[s.latest.m - 1] + '-' + s.latest.y : '';
-    $('per').textContent = lt + (periodLabel() ? (lt ? '  ·  ' : '') + 'Periode : ' + periodLabel() : '');
-    $('src').textContent = 'Sumber: sheet ' + br.sb + ' (' + fnum(raw.sb.length - 1) + ' baris), ' + br.am + ' (' + fnum(raw.am.length - 1) + ' baris) dan ' + SHEET_SA + ' (' + fnum(raw.sa.length - 1) + ' baris)';
-  } else { $('per').textContent = ''; $('src').textContent = ''; }
+    $('per').textContent = 'Sumber : SIKK ' + br.name + (lt ? '  ·  ' + lt : '') + (periodLabel() ? '  ·  Periode : ' + periodLabel() : '');
+  } else { $('per').textContent = 'Sumber : SIKK ' + br.name; }
 
   // banner
   const al = $('alert');
@@ -1058,7 +1045,6 @@ let started = false;
 function startApp() {
   const a = getAuth();
   $('gate').hidden = true; document.body.classList.remove('locked');
-  $('whoName').textContent = a ? a.n : '';
   if (started) return; started = true;
   render();
   loadBranch(S.cur);                                               // baca otomatis saat dibuka
@@ -1109,9 +1095,8 @@ $('gform').addEventListener('submit', async e => {
   $('gErr').textContent = '';
   setAuth(name); startApp();
 });
-$('btnOut').onclick = () => { clearAuth(); $('gName').value = ''; showGate(); };
 
-if (getAuth()) startApp(); else showGate();
+clearAuth(); showGate(); // login diminta setiap kali halaman dibuka/reload
 </script>
 </body>
 </html>
