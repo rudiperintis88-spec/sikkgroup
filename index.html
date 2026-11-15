@@ -889,6 +889,21 @@ function exportXLS(items, scope) {
   const wb = XLSX.utils.book_new();
   items.forEach(it => {
     const ws = XLSX.utils.aoa_to_sheet([it.head].concat(it.rows));
+    // kolom tanggal jadi tanggal asli Excel (bukan teks), kolom No jadi angka
+    const dateCols = [], numCols = [];
+    it.head.forEach((h, c) => { if (/tgl|tanggal|pelunasan/i.test(h)) dateCols.push(c); if (String(h).trim() === 'No') numCols.push(c); });
+    for (let r = 1; r <= it.rows.length; r++) {
+      dateCols.forEach(c => {
+        const cell = ws[XLSX.utils.encode_cell({ r, c })]; if (!cell || cell.t !== 's') return;
+        const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(cell.v); if (!m) return;
+        const ser = Date.UTC(+m[3], +m[2] - 1, +m[1]) / 86400000 + 25569;
+        cell.t = 'n'; cell.v = ser; cell.z = 'dd/mm/yyyy'; delete cell.w;
+      });
+      numCols.forEach(c => {
+        const cell = ws[XLSX.utils.encode_cell({ r, c })]; if (!cell || cell.t !== 's' || !/^\d+$/.test(cell.v)) return;
+        cell.t = 'n'; cell.v = +cell.v; delete cell.w;
+      });
+    }
     ws['!cols'] = it.head.map(h => ({ wch: Math.min(34, Math.max(11, String(h).length + 3)) }));
     ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: Math.max(1, it.rows.length), c: Math.max(0, it.head.length - 1) } }) };
     XLSX.utils.book_append_sheet(wb, ws, it.title);
