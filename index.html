@@ -75,7 +75,7 @@
   .tools button{cursor:pointer;font-weight:600}
   .tools button:disabled{opacity:.5;cursor:default}
   .tbl{border:1px solid var(--line);border-radius:16px;overflow:auto;max-height:70vh}
-  table{border-collapse:collapse;table-layout:fixed;min-width:100%;white-space:nowrap}
+  table{border-collapse:collapse;table-layout:fixed;min-width:100%;white-space:pre}
   th,td{overflow:hidden;text-overflow:ellipsis}
   th,td{padding:6px 12px;border-bottom:1px solid #eef0f4;text-align:left;font-size:12.5px}
   th{position:sticky;top:0;background:#f4f6fa;z-index:1;font-weight:600;font-size:12px;color:#344054}
@@ -449,7 +449,7 @@ function build(d, br, sb, am, sa) {
     if (!advName && m && T.namaAdv >= 0) advName = val(m[T.namaAdv]);   // cadangan: dari SB bila tidak ada di Data SA
     const row = [
       A.no >= 0 ? val(r[A.no]) : String(out.length + 1),
-      val(r[A.tglWO]), val(r[A.pol]), wn, adv, advName, val(r[A.nama]),
+      val(r[A.tglWO]), String(r[A.pol] == null ? '' : r[A.pol]), wn, adv, advName, val(r[A.nama]),
       val(r[A.sikkTgl]), sn, val(r[A.out]), val(r[A.sat]), val(r[A.op]),
       m ? val(m[T.ket]) : '', m ? val(m[T.fisik]) : '', m ? fmtTgl(val(m[T.keluar])) : '', m ? fmtTgl(val(m[T.p])) : '',
       src
