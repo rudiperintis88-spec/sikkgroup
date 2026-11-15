@@ -353,14 +353,23 @@ const dmy = s => { const m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(String(s || ''
 
 /* tanggal -> DD/MM/YYYY (hanya bila isinya memang tanggal; selain itu dibiarkan apa adanya) */
 const MON3 = { jan: 1, feb: 2, mar: 3, apr: 4, mei: 5, may: 5, jun: 6, jul: 7, agu: 8, aug: 8, ags: 8, sep: 9, okt: 10, oct: 10, nov: 11, des: 12, dec: 12 };
-function fmtTgl(v) {
-  const t = String(v == null ? '' : v).trim(); if (!t) return '';
-  const z = (d, m, y) => (m >= 1 && m <= 12 && d >= 1 && d <= 31) ? pad(d) + '/' + pad(m) + '/' + y : t;
-  let m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})(?:[ T].*)?$/.exec(t); if (m) return z(+m[1], +m[2], m[3]);
-  m = /^(\d{4})[\/.\-](\d{1,2})[\/.\-](\d{1,2})(?:[ T].*)?$/.exec(t); if (m) return z(+m[3], +m[2], m[1]);
-  m = /^(\d{1,2})[ \-]([A-Za-z]{3,})\.?[ \-,]+(\d{4})(?:[ T].*)?$/.exec(t);
-  if (m) { const mo = MON3[m[2].slice(0, 3).toLowerCase()]; if (mo) return z(+m[1], mo, m[3]); }
-  return t;
+function parseTgl(v) {   // -> {d,m,y,t:'hh:mm[:ss]'|''} atau null bila bukan tanggal
+  const t = String(v == null ? '' : v).trim(); if (!t) return null;
+  const tm = '(?:[ T]+(\\d{1,2}):(\\d{2})(?::(\\d{2}))?(?:\\.\\d+)?\\s*(?:Z|[+-]\\d{2}:?\\d{2})?)?$';
+  let d, mo, y, hm, m;
+  if ((m = new RegExp('^(\\d{1,2})[\\/.\\-](\\d{1,2})[\\/.\\-](\\d{4})' + tm).exec(t))) { d = +m[1]; mo = +m[2]; y = +m[3]; hm = m.slice(4); }
+  else if ((m = new RegExp('^(\\d{4})[\\/.\\-](\\d{1,2})[\\/.\\-](\\d{1,2})' + tm).exec(t))) { y = +m[1]; mo = +m[2]; d = +m[3]; hm = m.slice(4); }
+  else if ((m = new RegExp('^(\\d{1,2})[ \\-]([A-Za-z]{3,})\\.?[ \\-,]+(\\d{4})' + tm).exec(t))) { mo = MON3[m[2].slice(0, 3).toLowerCase()]; d = +m[1]; y = +m[3]; hm = m.slice(4); }
+  else return null;
+  if (!(mo >= 1 && mo <= 12 && d >= 1 && d <= 31)) return null;
+  const hh = hm[0] != null ? +hm[0] : null, mi = hm[1] != null ? +hm[1] : 0, ss = hm[2] != null ? +hm[2] : null;
+  return { d, m: mo, y, hh, mi, ss };
+}
+function fmtTgl(v) {     // DD/MM/YYYY (bila ada jam: DD/MM/YYYY HH:MM[:SS]); bukan tanggal -> apa adanya
+  const t = String(v == null ? '' : v).trim(); const p = parseTgl(t); if (!p) return t;
+  let o = pad(p.d) + '/' + pad(p.m) + '/' + p.y;
+  if (p.hh != null) o += ' ' + pad(p.hh) + ':' + pad(p.mi) + (p.ss != null ? ':' + pad(p.ss) : '');
+  return o;
 }
 
 /* ---------- Susun AM seperti SB ---------- */
@@ -889,20 +898,19 @@ function exportXLS(items, scope) {
   const wb = XLSX.utils.book_new();
   items.forEach(it => {
     const ws = XLSX.utils.aoa_to_sheet([it.head].concat(it.rows));
-    // kolom tanggal jadi tanggal asli Excel (bukan teks), kolom No jadi angka
-    const dateCols = [], numCols = [];
-    it.head.forEach((h, c) => { if (/tgl|tanggal|pelunasan/i.test(h)) dateCols.push(c); if (String(h).trim() === 'No') numCols.push(c); });
+    // semua sel berisi tanggal (dengan atau tanpa jam) jadi tanggal asli Excel, bukan teks; kolom No jadi angka
+    const numCols = [];
+    it.head.forEach((h, c) => { if (String(h).trim() === 'No') numCols.push(c); });
     for (let r = 1; r <= it.rows.length; r++) {
-      dateCols.forEach(c => {
-        const cell = ws[XLSX.utils.encode_cell({ r, c })]; if (!cell || cell.t !== 's') return;
-        const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(cell.v); if (!m) return;
-        const ser = Date.UTC(+m[3], +m[2] - 1, +m[1]) / 86400000 + 25569;
-        cell.t = 'n'; cell.v = ser; cell.z = 'dd/mm/yyyy'; delete cell.w;
-      });
-      numCols.forEach(c => {
-        const cell = ws[XLSX.utils.encode_cell({ r, c })]; if (!cell || cell.t !== 's' || !/^\d+$/.test(cell.v)) return;
-        cell.t = 'n'; cell.v = +cell.v; delete cell.w;
-      });
+      for (let c = 0; c < it.head.length; c++) {
+        const cell = ws[XLSX.utils.encode_cell({ r, c })]; if (!cell || cell.t !== 's') continue;
+        if (numCols.includes(c)) { if (/^\d+$/.test(cell.v)) { cell.t = 'n'; cell.v = +cell.v; delete cell.w; } continue; }
+        const p = parseTgl(cell.v); if (!p) continue;
+        let ser = Date.UTC(p.y, p.m - 1, p.d) / 86400000 + 25569;
+        if (p.hh != null) ser += (p.hh * 3600 + p.mi * 60 + (p.ss || 0)) / 86400;
+        cell.t = 'n'; cell.v = ser; delete cell.w;
+        cell.z = p.hh != null ? (p.ss != null ? 'dd/mm/yyyy hh:mm:ss' : 'dd/mm/yyyy hh:mm') : 'dd/mm/yyyy';
+      }
     }
     ws['!cols'] = it.head.map(h => ({ wch: Math.min(34, Math.max(11, String(h).length + 3)) }));
     ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: Math.max(1, it.rows.length), c: Math.max(0, it.head.length - 1) } }) };
