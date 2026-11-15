@@ -748,7 +748,7 @@ function render() {
         const c = (i === 0 && numNo) ? base + rn : (r[i] == null ? '' : r[i]);
         if (isOut && i === 16) h += '<td><span class="tag ' + (c === 'SIKK' ? 'sikk' : c === 'WO' ? 'wo' : 'none') + '">' +
           (c === 'SIKK' ? 'SIKK No' : c === 'WO' ? 'No WO' : 'Tidak ketemu') + '</span></td>';
-        else if (isOut && i === 5 && !c) h += '<td class="miss">-</td>';
+        else if (isOut && i === 5 && !c) h += '<td class="miss"></td>';
         else h += '<td>' + esc(c) + '</td>';
       }
       h += '</tr>';
@@ -814,7 +814,7 @@ function drawPop() {
     for (let i = 0; i < d.head.length; i++) {
       const c = (i === 0 && d.head[0] === 'No') ? P.page * PAGE + pn : (r[i] == null ? '' : r[i]);
       if (i === 16) h += '<td><span class="tag ' + (c === 'SIKK' ? 'sikk' : c === 'WO' ? 'wo' : 'none') + '">' + (SRC_TXT[c] || c) + '</span></td>';
-      else if (i === 5 && !c) h += '<td class="miss">-</td>';
+      else if (i === 5 && !c) h += '<td class="miss"></td>';
       else h += '<td>' + esc(c) + '</td>';
     }
     h += '</tr>';
@@ -898,6 +898,8 @@ function exportXLS(items, scope) {
   const wb = XLSX.utils.book_new();
   items.forEach(it => {
     const ws = XLSX.utils.aoa_to_sheet([it.head].concat(it.rows));
+    // sel kosong benar-benar dikosongkan (teks "" dihitung Excel sebagai terisi saat kolom di-blok)
+    Object.keys(ws).forEach(k => { if (k[0] !== '!' && ws[k].t === 's' && ws[k].v === '') delete ws[k]; });
     // semua sel berisi tanggal (dengan atau tanpa jam) jadi tanggal asli Excel, bukan teks; kolom No jadi angka
     const numCols = [];
     it.head.forEach((h, c) => { if (String(h).trim() === 'No') numCols.push(c); });
