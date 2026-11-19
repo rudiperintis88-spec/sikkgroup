@@ -372,6 +372,16 @@ function fmtTgl(v) {     // DD/MM/YYYY (bila ada jam: DD/MM/YYYY HH:MM[:SS]); bu
   return o;
 }
 
+/* No Polisi dikunci ke format baku: wilayah 2 kolom, nomor 4 kolom (rata kiri), seri.
+   Contoh: "BK 1    RHS", "BK 11   SRG", "B  1039 FIO", "BK 878  YA". Yang tidak sesuai pola dibiarkan apa adanya. */
+function fmtPol(v) {
+  const raw = String(v == null ? '' : v);
+  const m = /^\s*([A-Za-z]{1,2})\s*(\d{1,4})\s*([A-Za-z]{0,3})\s*$/.exec(raw);
+  if (!m) return raw;
+  const w = m[1].padEnd(2, ' '), n = m[2];
+  return m[3] ? w + ' ' + n.padEnd(4, ' ') + ' ' + m[3] : w + ' ' + n;
+}
+
 /* ---------- Susun AM seperti SB ---------- */
 function build(d, br, sb, am, sa) {
   const saH = sa[0];
@@ -449,7 +459,7 @@ function build(d, br, sb, am, sa) {
     if (!advName && m && T.namaAdv >= 0) advName = val(m[T.namaAdv]);   // cadangan: dari SB bila tidak ada di Data SA
     const row = [
       A.no >= 0 ? val(r[A.no]) : String(out.length + 1),
-      val(r[A.tglWO]), String(r[A.pol] == null ? '' : r[A.pol]), wn, adv, advName, val(r[A.nama]),
+      val(r[A.tglWO]), fmtPol(r[A.pol]), wn, adv, advName, val(r[A.nama]),
       val(r[A.sikkTgl]), sn, val(r[A.out]), val(r[A.sat]), val(r[A.op]),
       m ? val(m[T.ket]) : '', m ? val(m[T.fisik]) : '', m ? fmtTgl(val(m[T.keluar])) : '', m ? fmtTgl(val(m[T.p])) : '',
       src
